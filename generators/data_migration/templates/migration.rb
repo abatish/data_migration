@@ -3,4 +3,9 @@ class <%= class_name.underscore.camelize %> < ActiveRecord::Migration
     <%= migration_action %>_column :<%= table_name %>, :<%= attribute.name %><% if migration_action == 'add' %>, :<%= attribute.type %><% end -%>
     <%- end %>
   end
+
+  def self.down<% attributes.each do |attribute| %>
+    <%= migration_action %>_column :<%= table_name %>, :<%= attribute.name %><% if migration_action == 'remove' %>, :<%= attribute.type %><% end -%>
+    <%- end %>
+  end
 end
