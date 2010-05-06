@@ -1,7 +1,7 @@
 class DataMigrationGenerator < Rails::Generator::NamedBase
   def manifest
     record do |m|
-      path = ARGV.grep(/^PATH/).first.split('=').last if ARGV.grep(/^PATH/)
+      path = ARGV.grep(/^PATH/).first.split('=').last unless ARGV.grep(/^PATH/).empty?
       path ||= 'db/data'
 
       m.migration_template 'migration.rb', path, :assigns => get_local_assigns

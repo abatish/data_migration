@@ -2,15 +2,23 @@ module ActiveRecord
   module ConnectionAdapters # :nodoc:
     module SchemaStatements
       def add_data(obj, *args)
+        args = args.pop
+        method_name = ('find_or_create_by_'+create_method_name(args)).to_sym
         obj = obj.classify.constantize
-        obj.find_or_create(args)
+        obj.send(method_name, args)
       end
 
       def remove_data(obj, *args)
+        args = args.pop
+        method_name = ('find_by_'+create_method_name(args)).to_sym
         obj = obj.classify.constantize
-        method_name = 'find_by_'+args.keys.join('_and_')
-        result = obj.send(method_name.to_sym, *args.values)
+        result = obj.send(method_name, *args.values)
         result.destroy if result
+      end
+
+      private
+      def create_method_name(args)
+        args.keys.join('_and_')
       end
     end
   end
