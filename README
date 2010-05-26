@@ -1,4 +1,4 @@
-data_migration v0.1
+data_migration v0.2
 ==============
 data_migration allows you to separate data you need to load from your 
 normal database migrations in a minimal way.
@@ -8,6 +8,9 @@ Example
 
 -Generate Migration
 	script/generate data_migration BlockedDomains
+
+-Generate Migration in specific directory
+	script/generate data_migration BlockDomains PATH=db/bootstrap
 
 	-Outputs:
 		exists  db/data
@@ -19,15 +22,33 @@ Example
 		  end
 		end
 		
-	-Add your code:
+	-Add your code (with create):
 		def self.up
 		    BlockedEmailDomain.create(:domain => "mailinator.com")
 		    BlockedEmailDomain.create(:domain => "spamherelots.com")
 		    BlockedEmailDomain.create(:domain => "disposeamail.com")
 		end
 
+	-Add/Remove your code (with add_data and remove_data):
+		def self.up
+		    add_data(BlockedEmailDomain, :domain => "mailinator.com")
+		    add_data(BlockedEmailDomain, :domain => "spamherelots.com")
+		end
+
+		def self.down
+		    remove_data(BlockedEmailDomain, :domain => "mailinator.com")
+		    remove_data(BlockedEmailDomain, :domain => "spamherelots.com")
+		end
+
+	NOTE: add_data and remove_data work well for populating individual tables.
+	      If you need to populate relationships between tables I recommend creating
+	      and destroying each item the standard Rails way.
+
 -Run Migration
 	rake db:data:migrate
+
+-Run Migration (from a different location)
+	rake db:data:migrate[db/bootstrap]
 
 	-Output
 		==  BlockedDomains: migrating ===========================================================
@@ -38,3 +59,5 @@ Example
 
 Copyright (c) 2009 Knetwit Inc, released under the MIT license
 Author(s): Heath Anderson
+
+Updated by Dane Harrigan
