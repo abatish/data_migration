@@ -29,7 +29,7 @@ module ActiveRecord
         args = args.pop
         case args[:method]
           when :add_data
-            method_name = args[:force_create] ? 'create' : 'find_or_create_by_'
+            method_name = args[:force_create] ? 'create!' : 'find_or_create_by_'
           when :remove_data
             method_name = 'find_by_'
         end
