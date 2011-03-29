@@ -10,7 +10,12 @@ module ActiveRecord
         )
 
         args.delete :force_create if args[:force_create]
-        obj.send(method_name, args)
+        if args.size > 1 || method_name =~ /^create!?$/
+          obj.send(method_name, args)
+        else
+          value = args.first.last
+          obj.send(method_name, value)
+        end
       end
 
       def remove_data(obj, *args)
